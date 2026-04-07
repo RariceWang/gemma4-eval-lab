@@ -1,0 +1,26 @@
+{
+  "title": "Gemma 4 Series Comparison",
+  "research_question": "Gemma 4 系列不同参数版本在本地环境中的多语言推理能力与开放式生成质量是否存在稳定差异？",
+  "groups": [
+    {
+      "name": "multilingual_math",
+      "source_plan": "MGSM 子集或自建等价题",
+      "metric": "exact_match"
+    },
+    {
+      "name": "commonsense_reasoning",
+      "source_plan": "XCOPA 子集或自建等价题",
+      "metric": "accuracy"
+    },
+    {
+      "name": "open_ended_generation",
+      "source_plan": "人工编写的摘要、改写、提纲生成任务",
+      "metric": "human_rating"
+    }
+  ],
+  "default_options": {
+    "temperature": 0.2,
+    "top_p": 0.9,
+    "num_ctx": 8192
+  }
+}

@@ -1,0 +1,9 @@
+[project]
+name = "gemma4-eval-lab"
+version = "0.1.0"
+description = "Local evaluation scaffold for comparing Gemma 4 variants."
+readme = "README.md"
+requires-python = ">=3.11"
+
+[tool.pyright]
+typeCheckingMode = "basic"

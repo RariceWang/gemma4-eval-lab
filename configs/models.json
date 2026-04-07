@@ -1,0 +1,29 @@
+[
+  {
+    "id": "gemma4:e4b",
+    "label": "Gemma 4 E4B",
+    "params_b": 8.0,
+    "context_length": 131072,
+    "quantization": "Q4_K_M",
+    "default_local": true,
+    "notes": "本地边缘版本，成本最低，预期速度最快。"
+  },
+  {
+    "id": "gemma4:26b",
+    "label": "Gemma 4 26B",
+    "params_b": 25.8,
+    "context_length": 262144,
+    "quantization": "Q4_K_M",
+    "default_local": true,
+    "notes": "中等规模版本，预计在速度与能力之间更平衡。"
+  },
+  {
+    "id": "gemma4:31b",
+    "label": "Gemma 4 31B",
+    "params_b": 31.3,
+    "context_length": 262144,
+    "quantization": "Q4_K_M",
+    "default_local": false,
+    "notes": "最大本地版本，预期推理和生成质量最好，但 24G 内存机器不建议默认启用。"
+  }
+]
