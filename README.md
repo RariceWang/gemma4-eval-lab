@@ -1,30 +1,41 @@
-# Gemma 4 Series Eval Lab
+# Gemma 4 Frontier Eval Lab
 
-一个面向课程作业的独立实验项目，用于比较 Gemma 4 系列模型在本地环境中的生成与推理表现，并保留完整研究与执行日志。
+一个面向课程作业与前沿 benchmark 调研的独立实验项目，用于比较 Gemma 4 系列模型在本地环境中的推理、事实性、多语言与污染受控 benchmark 表现，并保留完整研究与执行日志。
 
 ## 当前选题
 
 题目暂定为：
 
-**Gemma 4 系列本地可运行版本在多语言推理与开放式生成任务中的性能对比**
+**Gemma 4 系列本地可运行版本在前沿 LLM benchmark 上的能力与效率对比**
 
-这个方向对应作业要求中的“大模型一系列版本性能对比”，同时兼顾实际可运行性：
+这个方向仍然属于“大模型一系列版本性能对比”，但方法已经升级为前沿评测版：
 
-- 本机已安装 3 个 Gemma 4 版本，可直接在本地复现实验。
-- 可以自然形成至少 3 组对比数据。
-- 3 页左右的报告结构清晰，容易写出“模型差异 + 任务差异 + 资源代价”的分析。
+- 使用官方 benchmark 子集而不是只用手工题
+- 显式纳入 benchmark contamination 问题
+- 增加多语言高级推理与事实性评测
+- 为长上下文扩展预留接口
 
-## 计划中的三组对比数据
+## 当前前沿评测套件
 
-1. 多语言数学推理：MGSM 风格子任务，指标为 `Exact Match`
-2. 多语言常识推理：XCOPA 风格子任务，指标为 `Accuracy`
-3. 开放式生成质量：摘要、改写、提纲生成，指标为人工打分
+默认核心套件：
 
-补充记录：
+1. `MMLU-Pro`
+2. `MMLU-CF`
+3. `MMLU-ProX-Lite`
+4. `LiveBench Reasoning`
+5. `SimpleQA`
+
+可选扩展：
+
+6. `LongBench-v2`
+
+补充记录指标：
 
 - 延迟与响应时间
+- prompt 长度
 - 输出长度
 - 失败率
+- 不同 benchmark 的稳健性差异
 
 ## 项目结构
 
@@ -32,6 +43,7 @@
 gemma4-eval-lab/
 ├── configs/
 ├── datasets/
+│   ├── frontier/
 │   └── pilot/
 ├── docs/
 ├── logs/
@@ -55,14 +67,21 @@ gemma4-eval-lab/
 - 默认实验只使用 `e4b` 与 `26b`
 - `31b` 在 24G 内存机器上不建议直接跑本地批量评测
 
-运行一个最小试验：
+先构建前沿 benchmark 小样本任务集：
+
+```bash
+python3 scripts/build_frontier_suite.py \
+  --suite frontier_smoke \
+  --out datasets/frontier/frontier_smoke.jsonl
+```
+
+再运行小样本评测：
 
 ```bash
 python3 scripts/benchmark_runner.py \
-  --dataset datasets/pilot/tasks.jsonl \
+  --dataset datasets/frontier/frontier_smoke.jsonl \
   --models gemma4:e4b gemma4:26b \
-  --out outputs/pilot_run \
-  --limit 3
+  --out outputs/frontier_smoke_run
 ```
 
 运行完成后会生成：
@@ -71,16 +90,22 @@ python3 scripts/benchmark_runner.py \
 - `outputs/.../summary.csv`
 - `outputs/.../metadata.json`
 
+## 核心文档
+
+- `docs/frontier_research_survey.md`
+- `docs/frontier_methodology.md`
+- `docs/experiment_plan.md`
+
 ## 日志约定
 
 - 研究与选题过程写入 `logs/`
 - 实验方案写入 `docs/`
-- 模型执行原始结果写入 `outputs/`
+- benchmark 执行原始结果写入 `outputs/`
 
 ## 当前状态
 
-- 已完成调研与题目收敛
-- 已完成实验方案初稿
-- 已完成最小评测脚本
-- 已完成双模型冒烟测试
-- 待执行：GitHub 远端创建与首次推送
+- 已完成初始课题收敛
+- 已完成前沿 benchmark 调研
+- 已完成 Hugging Face dataset viewer API 接入设计
+- 已完成最小前沿评测脚手架
+- 已完成本地双模型基础冒烟测试

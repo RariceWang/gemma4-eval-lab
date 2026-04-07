@@ -1,0 +1,175 @@
+{
+  "suites": {
+    "frontier_smoke": [
+      {
+        "benchmark": "mmlu_pro",
+        "dataset": "TIGER-Lab/MMLU-Pro",
+        "config": "default",
+        "split": "test",
+        "adapter": "mmlu_pro",
+        "language": "en",
+        "group": "reasoning_knowledge",
+        "offset": 0,
+        "length": 1
+      },
+      {
+        "benchmark": "mmlu_cf",
+        "dataset": "microsoft/MMLU-CF",
+        "config": "default",
+        "split": "val",
+        "adapter": "mmlu_cf",
+        "language": "en",
+        "group": "contamination_controlled_reasoning",
+        "offset": 0,
+        "length": 1
+      },
+      {
+        "benchmark": "mmlu_prox_lite_en",
+        "dataset": "li-lab/MMLU-ProX-Lite",
+        "config": "en",
+        "split": "test",
+        "adapter": "mmlu_prox_lite",
+        "language": "en",
+        "group": "multilingual_reasoning",
+        "offset": 0,
+        "length": 1
+      },
+      {
+        "benchmark": "mmlu_prox_lite_zh",
+        "dataset": "li-lab/MMLU-ProX-Lite",
+        "config": "zh",
+        "split": "test",
+        "adapter": "mmlu_prox_lite",
+        "language": "zh",
+        "group": "multilingual_reasoning",
+        "offset": 0,
+        "length": 1
+      },
+      {
+        "benchmark": "mmlu_prox_lite_sw",
+        "dataset": "li-lab/MMLU-ProX-Lite",
+        "config": "sw",
+        "split": "test",
+        "adapter": "mmlu_prox_lite",
+        "language": "sw",
+        "group": "multilingual_reasoning",
+        "offset": 0,
+        "length": 1
+      },
+      {
+        "benchmark": "livebench_reasoning",
+        "dataset": "livebench/reasoning",
+        "config": "default",
+        "split": "test",
+        "adapter": "livebench_reasoning",
+        "language": "en",
+        "group": "dynamic_reasoning",
+        "offset": 0,
+        "length": 1
+      },
+      {
+        "benchmark": "simpleqa",
+        "dataset": "OpenEvals/SimpleQA",
+        "config": "default",
+        "split": "test",
+        "adapter": "simpleqa",
+        "language": "en",
+        "group": "factuality",
+        "offset": 0,
+        "length": 1
+      }
+    ],
+    "frontier_pilot": [
+      {
+        "benchmark": "mmlu_pro",
+        "dataset": "TIGER-Lab/MMLU-Pro",
+        "config": "default",
+        "split": "test",
+        "adapter": "mmlu_pro",
+        "language": "en",
+        "group": "reasoning_knowledge",
+        "offset": 0,
+        "length": 8
+      },
+      {
+        "benchmark": "mmlu_cf",
+        "dataset": "microsoft/MMLU-CF",
+        "config": "default",
+        "split": "val",
+        "adapter": "mmlu_cf",
+        "language": "en",
+        "group": "contamination_controlled_reasoning",
+        "offset": 0,
+        "length": 8
+      },
+      {
+        "benchmark": "mmlu_prox_lite_en",
+        "dataset": "li-lab/MMLU-ProX-Lite",
+        "config": "en",
+        "split": "test",
+        "adapter": "mmlu_prox_lite",
+        "language": "en",
+        "group": "multilingual_reasoning",
+        "offset": 0,
+        "length": 4
+      },
+      {
+        "benchmark": "mmlu_prox_lite_zh",
+        "dataset": "li-lab/MMLU-ProX-Lite",
+        "config": "zh",
+        "split": "test",
+        "adapter": "mmlu_prox_lite",
+        "language": "zh",
+        "group": "multilingual_reasoning",
+        "offset": 0,
+        "length": 4
+      },
+      {
+        "benchmark": "mmlu_prox_lite_sw",
+        "dataset": "li-lab/MMLU-ProX-Lite",
+        "config": "sw",
+        "split": "test",
+        "adapter": "mmlu_prox_lite",
+        "language": "sw",
+        "group": "multilingual_reasoning",
+        "offset": 0,
+        "length": 4
+      },
+      {
+        "benchmark": "livebench_reasoning",
+        "dataset": "livebench/reasoning",
+        "config": "default",
+        "split": "test",
+        "adapter": "livebench_reasoning",
+        "language": "en",
+        "group": "dynamic_reasoning",
+        "offset": 0,
+        "length": 4
+      },
+      {
+        "benchmark": "simpleqa",
+        "dataset": "OpenEvals/SimpleQA",
+        "config": "default",
+        "split": "test",
+        "adapter": "simpleqa",
+        "language": "en",
+        "group": "factuality",
+        "offset": 0,
+        "length": 6
+      }
+    ],
+    "long_context_extension": [
+      {
+        "benchmark": "longbench_v2",
+        "dataset": "zai-org/LongBench-v2",
+        "config": "default",
+        "split": "train",
+        "adapter": "longbench_v2",
+        "language": "en",
+        "group": "long_context_reasoning",
+        "offset": 0,
+        "length": 2
+      }
+    ]
+  }
+}

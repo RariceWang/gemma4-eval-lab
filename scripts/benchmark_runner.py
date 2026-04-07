@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-"""Run simple local evaluations against Ollama and persist raw logs."""
+"""Run local evaluations against Ollama and persist raw logs."""
 
 from __future__ import annotations
 
 import argparse
 import csv
 import json
+import re
+import string
 import sys
 import time
 import urllib.error
@@ -23,9 +25,11 @@ OLLAMA_URL = "http://127.0.0.1:11434/api/generate"
 @dataclass
 class Task:
     task_id: str
+    benchmark: str
     group: str
     language: str
     metric: str
+    response_parser: str
     prompt: str
     reference: str
 
@@ -54,9 +58,11 @@ def load_tasks(path: Path, limit: int) -> list[Task]:
             tasks.append(
                 Task(
                     task_id=data["id"],
+                    benchmark=data.get("benchmark", data.get("group", "custom")),
                     group=data["group"],
                     language=data["language"],
                     metric=data["metric"],
+                    response_parser=data.get("response_parser", "raw_text"),
                     prompt=data["prompt"],
                     reference=data.get("reference", ""),
                 )
@@ -99,10 +105,36 @@ def normalize_text(text: str) -> str:
     return " ".join(text.strip().lower().split())
 
 
-def score_result(metric: str, response_text: str, reference: str) -> float | None:
-    if metric != "exact_match" or not reference:
+def normalize_simpleqa(text: str) -> str:
+    lowered = normalize_text(text)
+    table = str.maketrans("", "", string.punctuation)
+    return lowered.translate(table)
+
+
+def parse_response(text: str, response_parser: str) -> str:
+    text = text.strip()
+    if response_parser == "choice_letter":
+        match = re.search(r"\b([A-J])\b", text.upper())
+        return match.group(1) if match else text
+    if response_parser == "solution_tag":
+        match = re.search(r"<solution>\s*(.*?)\s*</solution>", text, flags=re.IGNORECASE | re.DOTALL)
+        return match.group(1).strip() if match else text
+    if response_parser == "short_answer":
+        first_line = text.splitlines()[0].strip()
+        return re.sub(r"^(answer|final answer)\s*:\s*", "", first_line, flags=re.IGNORECASE)
+    return text
+
+
+def score_result(metric: str, parsed_response: str, reference: str) -> float | None:
+    if not reference:
         return None
-    return float(normalize_text(response_text) == normalize_text(reference))
+    if metric == "exact_match":
+        return float(normalize_text(parsed_response) == normalize_text(reference))
+    if metric == "simpleqa_match":
+        pred = normalize_simpleqa(parsed_response)
+        gold = normalize_simpleqa(reference)
+        return float(pred == gold or gold in pred)
+    return None
 
 
 def write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
@@ -112,30 +144,50 @@ def write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
 
 
 def write_summary(path: Path, rows: list[dict[str, Any]]) -> None:
-    grouped: dict[tuple[str, str], list[dict[str, Any]]] = defaultdict(list)
+    grouped: dict[tuple[str, str, str], list[dict[str, Any]]] = defaultdict(list)
     for row in rows:
-        grouped[(row["model"], row["group"])].append(row)
+        grouped[(row["model"], row["benchmark"], row["group"])].append(row)
 
     with path.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.writer(handle)
         writer.writerow(
             [
                 "model",
+                "benchmark",
                 "group",
                 "task_count",
                 "scored_count",
                 "mean_score",
                 "mean_latency_sec",
+                "mean_prompt_chars",
+                "mean_response_chars",
                 "error_count",
             ]
         )
-        for (model, group), items in sorted(grouped.items()):
+        for (model, benchmark, group), items in sorted(grouped.items()):
             scored = [item["score"] for item in items if item["score"] is not None]
             latencies = [item["latency_sec"] for item in items if item["latency_sec"] is not None]
+            prompt_chars = [item["prompt_chars"] for item in items]
+            response_chars = [item["response_chars"] for item in items]
             errors = sum(1 for item in items if item["status"] != "ok")
             mean_score = round(sum(scored) / len(scored), 4) if scored else ""
             mean_latency = round(sum(latencies) / len(latencies), 4) if latencies else ""
-            writer.writerow([model, group, len(items), len(scored), mean_score, mean_latency, errors])
+            mean_prompt_chars = round(sum(prompt_chars) / len(prompt_chars), 2) if prompt_chars else ""
+            mean_response_chars = round(sum(response_chars) / len(response_chars), 2) if response_chars else ""
+            writer.writerow(
+                [
+                    model,
+                    benchmark,
+                    group,
+                    len(items),
+                    len(scored),
+                    mean_score,
+                    mean_latency,
+                    mean_prompt_chars,
+                    mean_response_chars,
+                    errors,
+                ]
+            )
 
 
 def main() -> int:
@@ -165,6 +217,7 @@ def main() -> int:
             status = "ok"
             error_message = ""
             response_text = ""
+            parsed_response = ""
             try:
                 response = call_ollama(
                     model=model,
@@ -175,30 +228,36 @@ def main() -> int:
                     num_ctx=args.num_ctx,
                 )
                 response_text = response.get("response", "").strip()
+                parsed_response = parse_response(response_text, task.response_parser)
             except (urllib.error.URLError, TimeoutError, OSError, ValueError) as exc:
                 status = "error"
                 error_message = str(exc)
 
             latency = round(time.perf_counter() - started, 4)
-            score = score_result(task.metric, response_text, task.reference)
+            score = score_result(task.metric, parsed_response, task.reference) if status == "ok" else None
             results.append(
                 {
                     "model": model,
                     "task_id": task.task_id,
+                    "benchmark": task.benchmark,
                     "group": task.group,
                     "language": task.language,
                     "metric": task.metric,
+                    "response_parser": task.response_parser,
                     "reference": task.reference,
                     "response": response_text,
+                    "parsed_response": parsed_response,
                     "score": score,
                     "status": status,
                     "error": error_message,
                     "latency_sec": latency,
+                    "prompt_chars": len(task.prompt),
+                    "response_chars": len(response_text),
                 }
             )
             print(
-                f"[{status}] model={model} task={task.task_id} "
-                f"group={task.group} latency={latency:.2f}s",
+                f"[{status}] model={model} benchmark={task.benchmark} "
+                f"task={task.task_id} latency={latency:.2f}s",
                 file=sys.stderr,
             )
 
