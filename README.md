@@ -90,6 +90,13 @@ python3 scripts/benchmark_runner.py \
 - `outputs/.../summary.csv`
 - `outputs/.../metadata.json`
 
+可用的任务集：
+
+- `datasets/frontier/frontier_smoke.jsonl`
+- `datasets/frontier/frontier_pilot_e4b.jsonl`
+- `datasets/frontier/frontier_calibration_26b.jsonl`
+- `datasets/frontier/long_context_extension.jsonl`
+
 ## 核心文档
 
 - `docs/frontier_research_survey.md`
@@ -109,3 +116,14 @@ python3 scripts/benchmark_runner.py \
 - 已完成 Hugging Face dataset viewer API 接入设计
 - 已完成最小前沿评测脚手架
 - 已完成本地双模型基础冒烟测试
+- 已完成 `gemma4:e4b` 的 19 条前沿 pilot
+- 已完成 `gemma4:26b` 的 7 条校准子集
+
+## 最新发现
+
+截至 2026-04-08：
+
+- `gemma4:e4b` 更适合作为当前机器上的默认前沿 benchmark 主力模型
+- `gemma4:26b` 在英文知识题和 `MMLU-CF` 上稳定，但在更重任务上时延迅速升高
+- `gemma4:e4b` 在 `SimpleQA` 上表现明显弱于其在推理类 benchmark 上的表现
+- 多语言高级推理中，`sw` 的推理成本明显高于 `en` 与 `zh`

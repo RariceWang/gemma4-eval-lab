@@ -8,6 +8,7 @@
 2. **评分升级**：按 benchmark 类型使用不同解析与匹配策略
 3. **实验设计升级**：把能力、稳健性、效率一起纳入
 4. **复现升级**：统一通过 Hugging Face dataset viewer API 构造本地任务集
+5. **日志升级**：runner 改为增量写出原始结果，避免长跑中断后整轮结果丢失
 
 ## 2. 新实验问题
 
@@ -112,7 +113,15 @@
 ### 默认执行
 
 - `gemma4:e4b`
+
+### 默认校准执行
+
 - `gemma4:26b`
+
+说明：
+
+- `e4b` 用于完整前沿 pilot
+- `26b` 在当前 24G 机器上只建议跑校准子集，不建议直接承担整套 pilot
 
 ### 默认不执行
 
@@ -121,8 +130,9 @@
 ### benchmark 默认层级
 
 1. `frontier_smoke`
-2. `frontier_pilot`
-3. `long_context_extension`
+2. `frontier_pilot_e4b`
+3. `frontier_calibration_26b`
+4. `long_context_extension`
 
 ## 8. 结果分析方式
 
@@ -138,4 +148,5 @@
 - 仍以本地模型推理为主，无法覆盖真正的 frontier closed models
 - `LongBench-v2` 的全量评测不适合当前机器
 - `SimpleQA` 目前仅做近似本地评分
+- `26b` 的稳定可用区间明显窄于 `e4b`
 - 暂未接入正式统计显著性检验

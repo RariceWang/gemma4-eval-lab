@@ -143,6 +143,11 @@ def write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
             handle.write(json.dumps(row, ensure_ascii=False) + "\n")
 
 
+def append_jsonl(path: Path, row: dict[str, Any]) -> None:
+    with path.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(row, ensure_ascii=False) + "\n")
+
+
 def write_summary(path: Path, rows: list[dict[str, Any]]) -> None:
     grouped: dict[tuple[str, str, str], list[dict[str, Any]]] = defaultdict(list)
     for row in rows:
@@ -210,6 +215,13 @@ def main() -> int:
         },
     }
 
+    metadata_path = out_dir / "metadata.json"
+    raw_path = out_dir / "raw_outputs.jsonl"
+    summary_path = out_dir / "summary.csv"
+
+    metadata_path.write_text(json.dumps(run_meta, ensure_ascii=False, indent=2), encoding="utf-8")
+    raw_path.write_text("", encoding="utf-8")
+
     results: list[dict[str, Any]] = []
     for model in args.models:
         for task in tasks:
@@ -235,38 +247,32 @@ def main() -> int:
 
             latency = round(time.perf_counter() - started, 4)
             score = score_result(task.metric, parsed_response, task.reference) if status == "ok" else None
-            results.append(
-                {
-                    "model": model,
-                    "task_id": task.task_id,
-                    "benchmark": task.benchmark,
-                    "group": task.group,
-                    "language": task.language,
-                    "metric": task.metric,
-                    "response_parser": task.response_parser,
-                    "reference": task.reference,
-                    "response": response_text,
-                    "parsed_response": parsed_response,
-                    "score": score,
-                    "status": status,
-                    "error": error_message,
-                    "latency_sec": latency,
-                    "prompt_chars": len(task.prompt),
-                    "response_chars": len(response_text),
-                }
-            )
+            record = {
+                "model": model,
+                "task_id": task.task_id,
+                "benchmark": task.benchmark,
+                "group": task.group,
+                "language": task.language,
+                "metric": task.metric,
+                "response_parser": task.response_parser,
+                "reference": task.reference,
+                "response": response_text,
+                "parsed_response": parsed_response,
+                "score": score,
+                "status": status,
+                "error": error_message,
+                "latency_sec": latency,
+                "prompt_chars": len(task.prompt),
+                "response_chars": len(response_text),
+            }
+            results.append(record)
+            append_jsonl(raw_path, record)
             print(
                 f"[{status}] model={model} benchmark={task.benchmark} "
                 f"task={task.task_id} latency={latency:.2f}s",
                 file=sys.stderr,
             )
 
-    metadata_path = out_dir / "metadata.json"
-    raw_path = out_dir / "raw_outputs.jsonl"
-    summary_path = out_dir / "summary.csv"
-
-    metadata_path.write_text(json.dumps(run_meta, ensure_ascii=False, indent=2), encoding="utf-8")
-    write_jsonl(raw_path, results)
     write_summary(summary_path, results)
 
     print(f"Saved metadata to {metadata_path}")
