@@ -65,6 +65,9 @@ gemma4-eval-lab/
 说明：
 
 - 默认实验只使用 `e4b` 与 `26b`
+- 官方实验统一使用 `think=true`
+- 默认上下文窗口统一设为 `256k`（`num_ctx=262144`）
+- 特别重的任务单独提高超时上限
 - `31b` 在 24G 内存机器上不建议直接跑本地批量评测
 
 先构建前沿 benchmark 小样本任务集：
@@ -81,7 +84,10 @@ python3 scripts/build_frontier_suite.py \
 python3 scripts/benchmark_runner.py \
   --dataset datasets/frontier/frontier_smoke.jsonl \
   --models gemma4:e4b gemma4:26b \
-  --out outputs/frontier_smoke_run
+  --out outputs/frontier_smoke_run \
+  --think true \
+  --num-ctx 262144 \
+  --timeout 900
 ```
 
 运行完成后会生成：
@@ -95,6 +101,7 @@ python3 scripts/benchmark_runner.py \
 - `datasets/frontier/frontier_smoke.jsonl`
 - `datasets/frontier/frontier_pilot_e4b.jsonl`
 - `datasets/frontier/frontier_calibration_26b.jsonl`
+- `datasets/frontier/frontier_heavy_26b.jsonl`
 - `datasets/frontier/long_context_extension.jsonl`
 
 ## 核心文档
@@ -116,15 +123,16 @@ python3 scripts/benchmark_runner.py \
 - 已完成 Hugging Face dataset viewer API 接入设计
 - 已完成最小前沿评测脚手架
 - 已完成本地双模型基础冒烟测试
-- 已完成 `gemma4:e4b` 的 19 条前沿 pilot
-- 已完成 `gemma4:26b` 的 7 条校准子集
+- 已完成统一设置下的 `gemma4:26b` 正式校准集
+- 已完成统一设置下的 `gemma4:e4b` 正式 pilot
+- 所有正式运行现已记录 `prompt + thinking + response`
 
 ## 最新发现
 
 截至 2026-04-08：
 
-- `gemma4:e4b` 更适合作为当前机器上的默认前沿 benchmark 主力模型
-- `gemma4:26b` 在英文知识题和 `MMLU-CF` 上稳定，但在更重任务上时延迅速升高
-- `gemma4:e4b` 在 `SimpleQA` 上表现明显弱于其在推理类 benchmark 上的表现
-- 多语言高级推理中，`sw` 的推理成本明显高于 `en` 与 `zh`
-- 对 `gemma4:26b` 而言，重任务超时的主因更接近 `thinking` 阶段过长，而不是上下文窗口太小
+- 正式实验统一采用 `think=true` 与 `num_ctx=262144`
+- `gemma4:26b` 在官方校准集上对 `MMLU-CF / MMLU-Pro / MMLU-ProX-Lite` 均跑通
+- `gemma4:e4b` 在正式 pilot 上对 `MMLU-CF`、多语言推理和 `LiveBench` 表现稳定，但在 `SimpleQA` 上仍然偏弱
+- `26b` 的 thinking 内容明显更长，尤其在更难题与中文题上更明显
+- `e4b` 实际生效上下文上限为 `131072`，`26b` 则可实际跑到 `262144`

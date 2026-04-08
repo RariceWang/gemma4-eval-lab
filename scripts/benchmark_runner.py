@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run local evaluations against Ollama and persist raw logs."""
+"""Run local evaluations against Ollama and persist full streamed logs."""
 
 from __future__ import annotations
 
@@ -39,11 +39,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--dataset", required=True, help="Path to jsonl dataset.")
     parser.add_argument("--models", nargs="+", required=True, help="Model IDs to run.")
     parser.add_argument("--out", required=True, help="Output directory.")
-    parser.add_argument("--timeout", type=int, default=300, help="Per request timeout in seconds.")
+    parser.add_argument("--timeout", type=int, default=900, help="Socket timeout in seconds.")
     parser.add_argument("--limit", type=int, default=0, help="Optional limit on task count.")
     parser.add_argument("--temperature", type=float, default=0.2, help="Sampling temperature.")
     parser.add_argument("--top-p", type=float, default=0.9, dest="top_p", help="Top-p value.")
-    parser.add_argument("--num-ctx", type=int, default=8192, dest="num_ctx", help="Context window limit.")
+    parser.add_argument("--num-ctx", type=int, default=262144, dest="num_ctx", help="Context window limit.")
     parser.add_argument("--think", choices=["true", "false"], default="true", help="Whether to enable thinking.")
     return parser.parse_args()
 
@@ -73,7 +73,7 @@ def load_tasks(path: Path, limit: int) -> list[Task]:
     return tasks
 
 
-def call_ollama(
+def call_ollama_stream(
     model: str,
     prompt: str,
     timeout: int,
@@ -85,7 +85,7 @@ def call_ollama(
     payload = {
         "model": model,
         "prompt": prompt,
-        "stream": False,
+        "stream": True,
         "think": think,
         "options": {
             "temperature": temperature,
@@ -93,15 +93,56 @@ def call_ollama(
             "num_ctx": num_ctx,
         },
     }
-    data = json.dumps(payload).encode("utf-8")
     request = urllib.request.Request(
         OLLAMA_URL,
-        data=data,
+        data=json.dumps(payload).encode("utf-8"),
         headers={"Content-Type": "application/json"},
         method="POST",
     )
+
+    started = time.perf_counter()
+    first_thinking_sec: float | None = None
+    first_response_sec: float | None = None
+    thinking_parts: list[str] = []
+    response_parts: list[str] = []
+    chunk_count = 0
+    done_reason = ""
+
     with urllib.request.urlopen(request, timeout=timeout) as response:
-        return json.loads(response.read().decode("utf-8"))
+        while True:
+            line = response.readline()
+            if not line:
+                break
+            line = line.strip()
+            if not line:
+                continue
+            event = json.loads(line.decode("utf-8"))
+            now = time.perf_counter()
+            thought = event.get("thinking", "")
+            piece = event.get("response", "")
+            if thought:
+                if first_thinking_sec is None:
+                    first_thinking_sec = now - started
+                thinking_parts.append(thought)
+            if piece:
+                if first_response_sec is None:
+                    first_response_sec = now - started
+                response_parts.append(piece)
+            chunk_count += 1
+            if event.get("done", False):
+                done_reason = event.get("done_reason", "")
+                break
+
+    total_time = time.perf_counter() - started
+    return {
+        "thinking": "".join(thinking_parts),
+        "response": "".join(response_parts).strip(),
+        "first_thinking_sec": round(first_thinking_sec, 4) if first_thinking_sec is not None else None,
+        "first_response_sec": round(first_response_sec, 4) if first_response_sec is not None else None,
+        "chunk_count": chunk_count,
+        "done_reason": done_reason,
+        "total_time_sec": round(total_time, 4),
+    }
 
 
 def normalize_text(text: str) -> str:
@@ -140,12 +181,6 @@ def score_result(metric: str, parsed_response: str, reference: str) -> float | N
     return None
 
 
-def write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
-    with path.open("w", encoding="utf-8") as handle:
-        for row in rows:
-            handle.write(json.dumps(row, ensure_ascii=False) + "\n")
-
-
 def append_jsonl(path: Path, row: dict[str, Any]) -> None:
     with path.open("a", encoding="utf-8") as handle:
         handle.write(json.dumps(row, ensure_ascii=False) + "\n")
@@ -167,7 +202,10 @@ def write_summary(path: Path, rows: list[dict[str, Any]]) -> None:
                 "scored_count",
                 "mean_score",
                 "mean_latency_sec",
+                "mean_first_thinking_sec",
+                "mean_first_response_sec",
                 "mean_prompt_chars",
+                "mean_thinking_chars",
                 "mean_response_chars",
                 "error_count",
             ]
@@ -175,13 +213,12 @@ def write_summary(path: Path, rows: list[dict[str, Any]]) -> None:
         for (model, benchmark, group), items in sorted(grouped.items()):
             scored = [item["score"] for item in items if item["score"] is not None]
             latencies = [item["latency_sec"] for item in items if item["latency_sec"] is not None]
+            first_thinking = [item["first_thinking_sec"] for item in items if item["first_thinking_sec"] is not None]
+            first_response = [item["first_response_sec"] for item in items if item["first_response_sec"] is not None]
             prompt_chars = [item["prompt_chars"] for item in items]
+            thinking_chars = [item["thinking_chars"] for item in items]
             response_chars = [item["response_chars"] for item in items]
             errors = sum(1 for item in items if item["status"] != "ok")
-            mean_score = round(sum(scored) / len(scored), 4) if scored else ""
-            mean_latency = round(sum(latencies) / len(latencies), 4) if latencies else ""
-            mean_prompt_chars = round(sum(prompt_chars) / len(prompt_chars), 2) if prompt_chars else ""
-            mean_response_chars = round(sum(response_chars) / len(response_chars), 2) if response_chars else ""
             writer.writerow(
                 [
                     model,
@@ -189,10 +226,13 @@ def write_summary(path: Path, rows: list[dict[str, Any]]) -> None:
                     group,
                     len(items),
                     len(scored),
-                    mean_score,
-                    mean_latency,
-                    mean_prompt_chars,
-                    mean_response_chars,
+                    round(sum(scored) / len(scored), 4) if scored else "",
+                    round(sum(latencies) / len(latencies), 4) if latencies else "",
+                    round(sum(first_thinking) / len(first_thinking), 4) if first_thinking else "",
+                    round(sum(first_response) / len(first_response), 4) if first_response else "",
+                    round(sum(prompt_chars) / len(prompt_chars), 2) if prompt_chars else "",
+                    round(sum(thinking_chars) / len(thinking_chars), 2) if thinking_chars else "",
+                    round(sum(response_chars) / len(response_chars), 2) if response_chars else "",
                     errors,
                 ]
             )
@@ -232,10 +272,18 @@ def main() -> int:
             started = time.perf_counter()
             status = "ok"
             error_message = ""
-            response_text = ""
+            stream_result = {
+                "thinking": "",
+                "response": "",
+                "first_thinking_sec": None,
+                "first_response_sec": None,
+                "chunk_count": 0,
+                "done_reason": "",
+                "total_time_sec": None,
+            }
             parsed_response = ""
             try:
-                response = call_ollama(
+                stream_result = call_ollama_stream(
                     model=model,
                     prompt=task.prompt,
                     timeout=args.timeout,
@@ -244,8 +292,7 @@ def main() -> int:
                     num_ctx=args.num_ctx,
                     think=args.think == "true",
                 )
-                response_text = response.get("response", "").strip()
-                parsed_response = parse_response(response_text, task.response_parser)
+                parsed_response = parse_response(stream_result["response"], task.response_parser)
             except (urllib.error.URLError, TimeoutError, OSError, ValueError) as exc:
                 status = "error"
                 error_message = str(exc)
@@ -261,15 +308,22 @@ def main() -> int:
                 "think_enabled": args.think == "true",
                 "metric": task.metric,
                 "response_parser": task.response_parser,
+                "prompt": task.prompt,
                 "reference": task.reference,
-                "response": response_text,
+                "thinking": stream_result["thinking"],
+                "response": stream_result["response"],
                 "parsed_response": parsed_response,
                 "score": score,
                 "status": status,
                 "error": error_message,
                 "latency_sec": latency,
+                "first_thinking_sec": stream_result["first_thinking_sec"],
+                "first_response_sec": stream_result["first_response_sec"],
+                "chunk_count": stream_result["chunk_count"],
+                "done_reason": stream_result["done_reason"],
                 "prompt_chars": len(task.prompt),
-                "response_chars": len(response_text),
+                "thinking_chars": len(stream_result["thinking"]),
+                "response_chars": len(stream_result["response"]),
             }
             results.append(record)
             append_jsonl(raw_path, record)

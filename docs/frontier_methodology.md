@@ -8,7 +8,7 @@
 2. **评分升级**：按 benchmark 类型使用不同解析与匹配策略
 3. **实验设计升级**：把能力、稳健性、效率一起纳入
 4. **复现升级**：统一通过 Hugging Face dataset viewer API 构造本地任务集
-5. **日志升级**：runner 改为增量写出原始结果，避免长跑中断后整轮结果丢失
+5. **日志升级**：runner 改为流式记录 `thinking + response`，并增量写出原始结果
 
 ## 2. 新实验问题
 
@@ -98,25 +98,27 @@
 - 这不是 `SimpleQA` 官方完整评分器
 - 当前实现适合本地小样本 pilot，不适合作为最终论文级结论
 
-### Thinking 对照
+### Thinking 记录
 
-对支持 reasoning/thinking 的模型，需要把以下两种模式分开评估：
+本项目的正式实验统一使用：
 
 - `think=true`
-- `think=false`
 
 原因：
 
-- 某些模型在 `think=true` 下会先长时间输出内部思考，再给最终答案
-- 如果不拆开评估，会把“模型本身能力”与“推理模式时延”混在一起
-- 在本项目中，`gemma4:26b` 的重任务超时主要由 thinking 阶段拉长
+- 这是 Gemma 4 系列的默认推理模式之一
+- 重任务中的 thinking 内容本身也是实验对象
+- 需要把 thinking 作为正式输出的一部分记录下来
 
 ## 6. 新增记录指标
 
 除准确率外，新增：
 
 - `latency_sec`
+- `first_thinking_sec`
+- `first_response_sec`
 - `prompt_chars`
+- `thinking_chars`
 - `response_chars`
 - `status`
 - `parsed_response`
@@ -126,15 +128,7 @@
 ### 默认执行
 
 - `gemma4:e4b`
-
-### 默认校准执行
-
 - `gemma4:26b`
-
-说明：
-
-- `e4b` 用于完整前沿 pilot
-- `26b` 在当前 24G 机器上只建议跑校准子集，不建议直接承担整套 pilot
 
 ### 默认不执行
 
@@ -145,7 +139,8 @@
 1. `frontier_smoke`
 2. `frontier_pilot_e4b`
 3. `frontier_calibration_26b`
-4. `long_context_extension`
+4. `frontier_heavy_26b`
+5. `long_context_extension`
 
 ## 8. 结果分析方式
 
@@ -155,7 +150,7 @@
 2. **benchmark 维度**：不同 benchmark 上是否表现一致
 3. **语言维度**：`en` / `zh` / `sw`
 4. **效率维度**：能力增益是否值得延迟代价
-5. **推理模式维度**：`think=true` 与 `think=false`
+5. **thinking 维度**：thinking 内容长度、thinking 起始时间、最终答案起始时间
 
 ## 9. 当前限制
 
@@ -163,5 +158,5 @@
 - `LongBench-v2` 的全量评测不适合当前机器
 - `SimpleQA` 目前仅做近似本地评分
 - `26b` 的稳定可用区间明显窄于 `e4b`
-- `26b` 在 `think=true` 下的重任务可能被 reasoning 阶段主导
+- `26b` 在重任务上的时延可能被 thinking 阶段主导
 - 暂未接入正式统计显著性检验
