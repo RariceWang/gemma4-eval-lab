@@ -329,6 +329,41 @@
         "length": 1
       }
     ],
+    "frontier_heavy_26b": [
+      {
+        "benchmark": "mmlu_prox_lite_sw",
+        "dataset": "li-lab/MMLU-ProX-Lite",
+        "config": "sw",
+        "split": "test",
+        "adapter": "mmlu_prox_lite",
+        "language": "sw",
+        "group": "multilingual_reasoning",
+        "offset": 0,
+        "length": 1
+      },
+      {
+        "benchmark": "livebench_reasoning",
+        "dataset": "livebench/reasoning",
+        "config": "default",
+        "split": "test",
+        "adapter": "livebench_reasoning",
+        "language": "en",
+        "group": "dynamic_reasoning",
+        "offset": 0,
+        "length": 1
+      },
+      {
+        "benchmark": "simpleqa",
+        "dataset": "OpenEvals/SimpleQA",
+        "config": "default",
+        "split": "test",
+        "adapter": "simpleqa",
+        "language": "en",
+        "group": "factuality",
+        "offset": 0,
+        "length": 1
+      }
+    ],
     "long_context_extension": [
       {
         "benchmark": "longbench_v2",

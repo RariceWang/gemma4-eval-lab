@@ -127,3 +127,4 @@ python3 scripts/benchmark_runner.py \
 - `gemma4:26b` 在英文知识题和 `MMLU-CF` 上稳定，但在更重任务上时延迅速升高
 - `gemma4:e4b` 在 `SimpleQA` 上表现明显弱于其在推理类 benchmark 上的表现
 - 多语言高级推理中，`sw` 的推理成本明显高于 `en` 与 `zh`
+- 对 `gemma4:26b` 而言，重任务超时的主因更接近 `thinking` 阶段过长，而不是上下文窗口太小

@@ -44,6 +44,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--temperature", type=float, default=0.2, help="Sampling temperature.")
     parser.add_argument("--top-p", type=float, default=0.9, dest="top_p", help="Top-p value.")
     parser.add_argument("--num-ctx", type=int, default=8192, dest="num_ctx", help="Context window limit.")
+    parser.add_argument("--think", choices=["true", "false"], default="true", help="Whether to enable thinking.")
     return parser.parse_args()
 
 
@@ -79,11 +80,13 @@ def call_ollama(
     temperature: float,
     top_p: float,
     num_ctx: int,
+    think: bool,
 ) -> dict[str, Any]:
     payload = {
         "model": model,
         "prompt": prompt,
         "stream": False,
+        "think": think,
         "options": {
             "temperature": temperature,
             "top_p": top_p,
@@ -208,6 +211,7 @@ def main() -> int:
         "models": args.models,
         "task_count": len(tasks),
         "options": {
+            "think": args.think == "true",
             "temperature": args.temperature,
             "top_p": args.top_p,
             "num_ctx": args.num_ctx,
@@ -238,6 +242,7 @@ def main() -> int:
                     temperature=args.temperature,
                     top_p=args.top_p,
                     num_ctx=args.num_ctx,
+                    think=args.think == "true",
                 )
                 response_text = response.get("response", "").strip()
                 parsed_response = parse_response(response_text, task.response_parser)
@@ -253,6 +258,7 @@ def main() -> int:
                 "benchmark": task.benchmark,
                 "group": task.group,
                 "language": task.language,
+                "think_enabled": args.think == "true",
                 "metric": task.metric,
                 "response_parser": task.response_parser,
                 "reference": task.reference,
