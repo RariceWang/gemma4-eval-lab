@@ -117,47 +117,50 @@ def call_ollama_stream(
     chunk_count = 0
     done_reason = ""
 
-    with urllib.request.urlopen(request, timeout=timeout) as response:
-        while True:
-            line = response.readline()
-            if not line:
-                break
-            line = line.strip()
-            if not line:
-                continue
-            event = json.loads(line.decode("utf-8"))
-            now = time.perf_counter()
-            thought = event.get("thinking", "")
-            piece = event.get("response", "")
-            if thought:
-                if first_thinking_sec is None:
-                    first_thinking_sec = now - started
-                thinking_parts.append(thought)
-            if piece:
-                if first_response_sec is None:
-                    first_response_sec = now - started
-                response_parts.append(piece)
-            if chunk_logger is not None:
-                chunk_logger(
-                    {
-                        "t_sec": round(now - started, 4),
-                        "thinking": thought,
-                        "response": piece,
-                        "done": bool(event.get("done", False)),
-                    }
-                )
-            chunk_count += 1
-            if (
-                max_think_seconds > 0
-                and first_response_sec is None
-                and first_thinking_sec is not None
-                and (now - started) >= max_think_seconds
-            ):
-                done_reason = "long_think"
-                break
-            if event.get("done", False):
-                done_reason = event.get("done_reason", "")
-                break
+    try:
+        with urllib.request.urlopen(request, timeout=timeout) as response:
+            while True:
+                line = response.readline()
+                if not line:
+                    break
+                line = line.strip()
+                if not line:
+                    continue
+                event = json.loads(line.decode("utf-8"))
+                now = time.perf_counter()
+                thought = event.get("thinking", "")
+                piece = event.get("response", "")
+                if thought:
+                    if first_thinking_sec is None:
+                        first_thinking_sec = now - started
+                    thinking_parts.append(thought)
+                if piece:
+                    if first_response_sec is None:
+                        first_response_sec = now - started
+                    response_parts.append(piece)
+                if chunk_logger is not None:
+                    chunk_logger(
+                        {
+                            "t_sec": round(now - started, 4),
+                            "thinking": thought,
+                            "response": piece,
+                            "done": bool(event.get("done", False)),
+                        }
+                    )
+                chunk_count += 1
+                if (
+                    max_think_seconds > 0
+                    and first_response_sec is None
+                    and first_thinking_sec is not None
+                    and (now - started) >= max_think_seconds
+                ):
+                    done_reason = "long_think"
+                    break
+                if event.get("done", False):
+                    done_reason = event.get("done_reason", "")
+                    break
+    except KeyboardInterrupt:
+        done_reason = "interrupted"
 
     total_time = time.perf_counter() - started
     return {
@@ -190,6 +193,8 @@ def parse_response(text: str, response_parser: str) -> str:
         match = re.search(r"<solution>\s*(.*?)\s*</solution>", text, flags=re.IGNORECASE | re.DOTALL)
         return match.group(1).strip() if match else text
     if response_parser == "short_answer":
+        if not text:
+            return ""
         first_line = text.splitlines()[0].strip()
         return re.sub(r"^(answer|final answer)\s*:\s*", "", first_line, flags=re.IGNORECASE)
     return text
@@ -322,6 +327,8 @@ def main() -> int:
 
     metadata_path.write_text(json.dumps(run_meta, ensure_ascii=False, indent=2), encoding="utf-8")
 
+    stop_requested = False
+
     for model in args.models:
         for task in tasks:
             if make_completed_key(model, task.task_id) in completed:
@@ -398,6 +405,10 @@ def main() -> int:
                 if stream_result["done_reason"] == "long_think":
                     status = "long_think"
                     error_message = "long_think"
+                elif stream_result["done_reason"] == "interrupted":
+                    status = "interrupted"
+                    error_message = "interrupted"
+                    stop_requested = True
                 parsed_response = parse_response(stream_result["response"], task.response_parser)
             except (urllib.error.URLError, TimeoutError, OSError, ValueError) as exc:
                 status = "error"
@@ -451,6 +462,10 @@ def main() -> int:
                 f"task={task.task_id} latency={latency:.2f}s",
                 file=sys.stderr,
             )
+            if stop_requested:
+                break
+        if stop_requested:
+            break
 
     write_summary(summary_path, results)
 

@@ -25,5 +25,23 @@
     "quantization": "Q4_K_M",
     "default_local": false,
     "notes": "最大本地版本，预期推理和生成质量最好，但 24G 内存机器不建议默认启用。"
+  },
+  {
+    "id": "qwen3.5:9b",
+    "label": "Qwen 3.5 9B",
+    "params_b": 9.0,
+    "context_length": 262144,
+    "quantization": "Q4_K_M",
+    "default_local": true,
+    "notes": "本地已安装的小参数量 Qwen 对照模型，量级上最接近 Gemma 4 E4B；当前 smoke 结果显示可跑但在 sw 题上仍有长思考风险。"
+  },
+  {
+    "id": "qwen3.5:27b",
+    "label": "Qwen 3.5 27B",
+    "params_b": 27.8,
+    "context_length": 262144,
+    "quantization": "Q4_K_M",
+    "default_local": false,
+    "notes": "本地已安装，但试跑显示在当前机器上的 think=true 前沿配置下运行代价过高，不建议纳入课程报告主实验。"
   }
 ]
