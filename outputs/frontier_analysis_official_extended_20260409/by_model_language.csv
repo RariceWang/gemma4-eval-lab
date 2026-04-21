@@ -1,0 +1,6 @@
+model,think_mode,language,task_count,success_count,success_rate,long_think_count,long_think_rate,error_count,error_rate,scored_count,mean_score,mean_latency_sec,mean_first_thinking_sec,mean_first_response_sec,mean_think_to_response_gap_sec,mean_thinking_tail_sec,mean_prompt_chars,mean_thinking_chars,mean_response_chars
+gemma4:26b,think_true,en,16,15,0.9375,1,0.0625,0,0.0000,15,0.9333,135.7572,10.0810,84.4766,76.0475,125.6762,421.1250,3554.5000,0.9375
+gemma4:26b,think_true,zh,3,2,0.6667,1,0.3333,0,0.0000,2,1.0000,415.1915,7.3763,172.5654,164.7692,407.8153,329.6667,8170.3333,0.6667
+gemma4:e4b,think_true,en,15,15,1.0000,0,0.0000,0,0.0000,15,0.6000,44.6910,2.0447,41.2998,42.1746,45.7975,436.2667,2252.8667,155.6000
+gemma4:e4b,think_true,sw,2,2,1.0000,0,0.0000,0,0.0000,2,1.0000,77.2164,3.3893,77.1471,73.7578,73.8271,803.5000,3211.5000,1.0000
+gemma4:e4b,think_true,zh,2,2,1.0000,0,0.0000,0,0.0000,2,1.0000,73.9052,2.9275,73.8314,70.9039,70.9777,355.5000,2835.0000,1.0000

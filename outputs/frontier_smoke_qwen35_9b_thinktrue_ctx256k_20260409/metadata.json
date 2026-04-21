@@ -1,0 +1,17 @@
+{
+  "timestamp": "2026-04-09T22:16:16",
+  "dataset": "datasets/frontier/frontier_smoke.jsonl",
+  "models": [
+    "qwen3.5:9b"
+  ],
+  "task_count": 7,
+  "options": {
+    "think": true,
+    "temperature": 0.2,
+    "top_p": 0.9,
+    "num_ctx": 262144,
+    "timeout": 900
+  },
+  "resumed_at": "2026-04-09T22:16:16",
+  "existing_result_count": 6
+}

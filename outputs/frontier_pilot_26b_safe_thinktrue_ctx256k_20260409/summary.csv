@@ -1,0 +1,5 @@
+model,benchmark,group,task_count,scored_count,mean_score,mean_latency_sec,mean_first_thinking_sec,mean_first_response_sec,mean_prompt_chars,mean_thinking_chars,mean_response_chars,error_count
+gemma4:26b,mmlu_cf,contamination_controlled_reasoning,4,4,1.0,37.9764,3.5972,37.6894,186.0,1307.0,1.0,0
+gemma4:26b,mmlu_pro,reasoning_knowledge,4,4,0.75,190.1249,10.9294,189.8002,614.75,6352.0,1.0,0
+gemma4:26b,mmlu_prox_lite_en,multilingual_reasoning,2,1,1.0,486.5749,19.8885,72.2122,772.5,8156.5,0.5,1
+gemma4:26b,mmlu_prox_lite_zh,multilingual_reasoning,2,1,1.0,543.6957,9.0511,187.0731,355.5,9445.5,0.5,1

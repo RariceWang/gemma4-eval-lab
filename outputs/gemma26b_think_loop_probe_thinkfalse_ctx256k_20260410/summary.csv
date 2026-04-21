@@ -1,0 +1,3 @@
+model,benchmark,group,task_count,scored_count,mean_score,mean_latency_sec,mean_first_thinking_sec,mean_first_response_sec,mean_prompt_chars,mean_thinking_chars,mean_response_chars,error_count
+gemma4:26b,mmlu_prox_lite_en,multilingual_reasoning,1,1,0.0,97.5041,,36.0256,922.0,0.0,1676.0,0
+gemma4:26b,mmlu_prox_lite_zh,multilingual_reasoning,1,1,0.0,75.8765,,5.1475,433.0,0.0,1475.0,0

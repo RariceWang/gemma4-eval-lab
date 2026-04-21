@@ -67,7 +67,7 @@
 ### Qwen 9B
 
 - `mmlu_prox_lite_sw-70`
-  - 原始 `think=true`：`interrupted`，约 `927.82s`
+  - 原始 `think=true`：`long_think`，约 `927.82s`
   - 诊断 `think=false`：`ok`，约 `11.54s`
   - 得分：`1.0`
   - 输出：`I`

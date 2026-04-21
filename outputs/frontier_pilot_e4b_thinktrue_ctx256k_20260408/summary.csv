@@ -1,0 +1,8 @@
+model,benchmark,group,task_count,scored_count,mean_score,mean_latency_sec,mean_first_thinking_sec,mean_first_response_sec,mean_prompt_chars,mean_thinking_chars,mean_response_chars,error_count
+gemma4:e4b,livebench_reasoning,dynamic_reasoning,1,1,1.0,130.7646,3.0543,81.8463,1210.0,3629.0,2245.0,0
+gemma4:e4b,mmlu_cf,contamination_controlled_reasoning,4,4,1.0,26.1606,1.0427,26.0944,186.0,1621.0,1.0,0
+gemma4:e4b,mmlu_pro,reasoning_knowledge,4,4,0.5,54.2018,3.3183,54.1354,614.75,3478.25,1.0,0
+gemma4:e4b,mmlu_prox_lite_en,multilingual_reasoning,2,2,0.5,79.0232,2.8266,78.9367,772.5,3066.5,1.0,0
+gemma4:e4b,mmlu_prox_lite_sw,multilingual_reasoning,2,2,1.0,77.2164,3.3893,77.1471,803.5,3211.5,1.0,0
+gemma4:e4b,mmlu_prox_lite_zh,multilingual_reasoning,2,2,1.0,73.9052,2.9275,73.8314,355.5,2835.0,1.0,0
+gemma4:e4b,simpleqa,factuality,4,4,0.25,15.0261,0.8249,14.7144,146.5,908.5,19.75,0

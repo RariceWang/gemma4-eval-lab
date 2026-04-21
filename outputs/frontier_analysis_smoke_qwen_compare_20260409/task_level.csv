@@ -1,0 +1,22 @@
+run_name,dataset,model,think_mode,task_id,benchmark,group,language,status,score,latency_sec,first_thinking_sec,first_response_sec,think_to_response_gap_sec,thinking_tail_sec,prompt_chars,thinking_chars,response_chars,parsed_response,error
+frontier_smoke_20260407,datasets/frontier/frontier_smoke.jsonl,gemma4:26b,unknown,livebench_reasoning-bd14ba82d1fe813d,livebench_reasoning,dynamic_reasoning,en,error,,300.0089,,,,,1210,,0,,timed out
+frontier_smoke_20260407,datasets/frontier/frontier_smoke.jsonl,gemma4:26b,unknown,mmlu_cf-0,mmlu_cf,contamination_controlled_reasoning,en,ok,1.0,23.9145,,,,,174,,1,B,
+frontier_smoke_20260407,datasets/frontier/frontier_smoke.jsonl,gemma4:26b,unknown,mmlu_pro-70,mmlu_pro,reasoning_knowledge,en,ok,1.0,63.9365,,,,,623,,1,I,
+frontier_smoke_20260407,datasets/frontier/frontier_smoke.jsonl,gemma4:26b,unknown,mmlu_prox_lite_en-70,mmlu_prox_lite_en,multilingual_reasoning,en,ok,1.0,73.8753,,,,,623,,1,I,
+frontier_smoke_20260407,datasets/frontier/frontier_smoke.jsonl,gemma4:26b,unknown,mmlu_prox_lite_sw-70,mmlu_prox_lite_sw,multilingual_reasoning,sw,error,,300.0151,,,,,701,,0,,timed out
+frontier_smoke_20260407,datasets/frontier/frontier_smoke.jsonl,gemma4:26b,unknown,mmlu_prox_lite_zh-70,mmlu_prox_lite_zh,multilingual_reasoning,zh,ok,1.0,115.4988,,,,,278,,1,I,
+frontier_smoke_20260407,datasets/frontier/frontier_smoke.jsonl,gemma4:26b,unknown,simpleqa-0,simpleqa,factuality,en,error,,300.0234,,,,,136,,0,,timed out
+frontier_smoke_20260407,datasets/frontier/frontier_smoke.jsonl,gemma4:e4b,unknown,livebench_reasoning-bd14ba82d1fe813d,livebench_reasoning,dynamic_reasoning,en,ok,1.0,134.363,,,,,1210,,2441,"1, filmmaking, police-officer, journalist",
+frontier_smoke_20260407,datasets/frontier/frontier_smoke.jsonl,gemma4:e4b,unknown,mmlu_cf-0,mmlu_cf,contamination_controlled_reasoning,en,ok,1.0,18.0954,,,,,174,,1,B,
+frontier_smoke_20260407,datasets/frontier/frontier_smoke.jsonl,gemma4:e4b,unknown,mmlu_pro-70,mmlu_pro,reasoning_knowledge,en,ok,1.0,32.1117,,,,,623,,1,I,
+frontier_smoke_20260407,datasets/frontier/frontier_smoke.jsonl,gemma4:e4b,unknown,mmlu_prox_lite_en-70,mmlu_prox_lite_en,multilingual_reasoning,en,ok,1.0,25.8667,,,,,623,,1,I,
+frontier_smoke_20260407,datasets/frontier/frontier_smoke.jsonl,gemma4:e4b,unknown,mmlu_prox_lite_sw-70,mmlu_prox_lite_sw,multilingual_reasoning,sw,ok,1.0,47.3213,,,,,701,,1,I,
+frontier_smoke_20260407,datasets/frontier/frontier_smoke.jsonl,gemma4:e4b,unknown,mmlu_prox_lite_zh-70,mmlu_prox_lite_zh,multilingual_reasoning,zh,ok,1.0,38.0541,,,,,278,,1,I,
+frontier_smoke_20260407,datasets/frontier/frontier_smoke.jsonl,gemma4:e4b,unknown,simpleqa-0,simpleqa,factuality,en,ok,0.0,18.6168,,,,,136,,11,Judea Pearl,
+frontier_smoke_qwen35_9b_thinktrue_ctx256k_20260409,datasets/frontier/frontier_smoke.jsonl,qwen3.5:9b,think_true,livebench_reasoning-bd14ba82d1fe813d,livebench_reasoning,dynamic_reasoning,en,ok,1.0,334.0222,3.2354,253.3247,250.0893,330.7868,1210,6726,2054,"1, filmmaking, police-officer, journalist",
+frontier_smoke_qwen35_9b_thinktrue_ctx256k_20260409,datasets/frontier/frontier_smoke.jsonl,qwen3.5:9b,think_true,mmlu_cf-0,mmlu_cf,contamination_controlled_reasoning,en,ok,1.0,50.6169,1.0491,50.4982,49.4491,49.5678,174,1962,1,B,
+frontier_smoke_qwen35_9b_thinktrue_ctx256k_20260409,datasets/frontier/frontier_smoke.jsonl,qwen3.5:9b,think_true,mmlu_pro-70,mmlu_pro,reasoning_knowledge,en,ok,1.0,132.4082,10.1109,132.3091,122.1982,122.2973,623,5427,1,I,
+frontier_smoke_qwen35_9b_thinktrue_ctx256k_20260409,datasets/frontier/frontier_smoke.jsonl,qwen3.5:9b,think_true,mmlu_prox_lite_en-70,mmlu_prox_lite_en,multilingual_reasoning,en,ok,1.0,119.0133,2.4818,118.8965,116.4147,116.5315,623,3997,1,I,
+frontier_smoke_qwen35_9b_thinktrue_ctx256k_20260409,datasets/frontier/frontier_smoke.jsonl,qwen3.5:9b,think_true,mmlu_prox_lite_sw-70,mmlu_prox_lite_sw,multilingual_reasoning,sw,interrupted,,927.8223,4.4023,,,923.42,701,20173,0,,interrupted
+frontier_smoke_qwen35_9b_thinktrue_ctx256k_20260409,datasets/frontier/frontier_smoke.jsonl,qwen3.5:9b,think_true,mmlu_prox_lite_zh-70,mmlu_prox_lite_zh,multilingual_reasoning,zh,ok,1.0,368.6201,2.1952,368.4658,366.2706,366.4249,278,10052,1,I,
+frontier_smoke_qwen35_9b_thinktrue_ctx256k_20260409,datasets/frontier/frontier_smoke.jsonl,qwen3.5:9b,think_true,simpleqa-0,simpleqa,factuality,en,long_think,,600.0607,0.6233,,,599.4374,136,11690,0,,long_think

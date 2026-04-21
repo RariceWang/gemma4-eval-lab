@@ -1,0 +1,25 @@
+benchmark,model,metric,value
+MMLU-CF,Gemma 4 E4B,score,1.0000
+MMLU-CF,Gemma 4 E4B,latency_sec,26.1606
+MMLU-CF,Gemma 4 E4B,completion_rate,1.0000
+MMLU-CF,Gemma 4 26B,score,1.0000
+MMLU-CF,Gemma 4 26B,latency_sec,35.4793
+MMLU-CF,Gemma 4 26B,completion_rate,1.0000
+MMLU-Pro,Gemma 4 E4B,score,0.5000
+MMLU-Pro,Gemma 4 E4B,latency_sec,54.2018
+MMLU-Pro,Gemma 4 E4B,completion_rate,1.0000
+MMLU-Pro,Gemma 4 26B,score,0.8000
+MMLU-Pro,Gemma 4 26B,latency_sec,168.9330
+MMLU-Pro,Gemma 4 26B,completion_rate,1.0000
+MMLU-ProX-Lite (EN),Gemma 4 E4B,score,0.5000
+MMLU-ProX-Lite (EN),Gemma 4 E4B,latency_sec,79.0232
+MMLU-ProX-Lite (EN),Gemma 4 E4B,completion_rate,1.0000
+MMLU-ProX-Lite (EN),Gemma 4 26B,score,1.0000
+MMLU-ProX-Lite (EN),Gemma 4 26B,latency_sec,347.8719
+MMLU-ProX-Lite (EN),Gemma 4 26B,completion_rate,0.6667
+MMLU-ProX-Lite (ZH),Gemma 4 E4B,score,1.0000
+MMLU-ProX-Lite (ZH),Gemma 4 E4B,latency_sec,73.9052
+MMLU-ProX-Lite (ZH),Gemma 4 E4B,completion_rate,1.0000
+MMLU-ProX-Lite (ZH),Gemma 4 26B,score,1.0000
+MMLU-ProX-Lite (ZH),Gemma 4 26B,latency_sec,415.1915
+MMLU-ProX-Lite (ZH),Gemma 4 26B,completion_rate,0.6667

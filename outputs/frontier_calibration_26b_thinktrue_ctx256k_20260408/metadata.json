@@ -1,0 +1,15 @@
+{
+  "timestamp": "2026-04-08T20:02:29",
+  "dataset": "datasets/frontier/frontier_calibration_26b.jsonl",
+  "models": [
+    "gemma4:26b"
+  ],
+  "task_count": 7,
+  "options": {
+    "think": true,
+    "temperature": 0.2,
+    "top_p": 0.9,
+    "num_ctx": 262144,
+    "timeout": 1200
+  }
+}

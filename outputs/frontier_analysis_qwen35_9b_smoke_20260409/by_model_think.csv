@@ -1,0 +1,2 @@
+model,think_mode,task_count,success_count,success_rate,long_think_count,long_think_rate,error_count,error_rate,scored_count,mean_score,mean_latency_sec,mean_first_thinking_sec,mean_first_response_sec,mean_think_to_response_gap_sec,mean_thinking_tail_sec,mean_prompt_chars,mean_thinking_chars,mean_response_chars
+qwen3.5:9b,think_true,7,5,0.7143,1,0.1429,0,0.0000,5,1.0000,361.7948,3.4426,184.6989,180.8844,358.3522,535.0000,8575.2857,294.0000

@@ -1,0 +1,8 @@
+Benchmark,任务类型,主指标,备注
+MMLU-CF,污染受控知识推理,Accuracy,显式控制 benchmark contamination。
+MMLU-Pro,高难知识与推理,Exact Match,高难客观题，区分度高于经典 MMLU。
+MMLU-ProX-Lite (EN),多语言高级推理,Exact Match,英文多语言高级推理子集。
+MMLU-ProX-Lite (ZH),多语言高级推理,Exact Match,中文多语言高级推理子集。
+MMLU-ProX-Lite (SW),多语言高级推理,Exact Match,斯瓦希里语多语言高级推理子集。
+LiveBench Reasoning,动态推理,Exact Match,动态更新 benchmark，污染风险更低。
+SimpleQA,短事实问答,SimpleQA Match,本地近似 factuality 评分。

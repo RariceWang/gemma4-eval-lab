@@ -1,0 +1,12 @@
+模型,Benchmark,完成率,得分,平均时延(s),平均 thinking 字符,long_think 数
+Gemma 4 26B,MMLU-CF,100.0%,1.0000,35.48,1267,0
+Gemma 4 26B,MMLU-Pro,100.0%,0.8000,168.93,5592,0
+Gemma 4 26B,MMLU-ProX-Lite (EN),66.7%,1.0000,347.87,6258,1
+Gemma 4 26B,MMLU-ProX-Lite (ZH),66.7%,1.0000,415.19,8170,1
+Gemma 4 E4B,MMLU-CF,100.0%,1.0000,26.16,1621,0
+Gemma 4 E4B,MMLU-Pro,100.0%,0.5000,54.20,3478,0
+Gemma 4 E4B,MMLU-ProX-Lite (EN),100.0%,0.5000,79.02,3066,0
+Gemma 4 E4B,MMLU-ProX-Lite (ZH),100.0%,1.0000,73.91,2835,0
+Gemma 4 E4B,MMLU-ProX-Lite (SW),100.0%,1.0000,77.22,3212,0
+Gemma 4 E4B,LiveBench Reasoning,100.0%,1.0000,130.76,3629,0
+Gemma 4 E4B,SimpleQA,100.0%,0.2500,15.03,908,0

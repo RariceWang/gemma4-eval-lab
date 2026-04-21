@@ -1,0 +1,17 @@
+{
+  "timestamp": "2026-04-09T13:30:58",
+  "dataset": "datasets/frontier/frontier_heavy_26b.jsonl",
+  "models": [
+    "gemma4:26b"
+  ],
+  "task_count": 3,
+  "options": {
+    "think": true,
+    "temperature": 0.2,
+    "top_p": 0.9,
+    "num_ctx": 262144,
+    "timeout": 1800
+  },
+  "resumed_at": "2026-04-09T13:30:58",
+  "existing_result_count": 2
+}

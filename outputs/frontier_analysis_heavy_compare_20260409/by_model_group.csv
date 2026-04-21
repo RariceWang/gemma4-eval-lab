@@ -1,0 +1,7 @@
+model,think_mode,group,task_count,success_count,success_rate,long_think_count,long_think_rate,error_count,error_rate,scored_count,mean_score,mean_latency_sec,mean_first_thinking_sec,mean_first_response_sec,mean_think_to_response_gap_sec,mean_thinking_tail_sec,mean_prompt_chars,mean_thinking_chars,mean_response_chars
+gemma4:26b,think_false,dynamic_reasoning,1,1,1.0000,0,0.0000,0,0.0000,1,1.0000,34.6529,,,,,1210.0000,0.0000,1975.0000
+gemma4:26b,think_false,factuality,1,1,1.0000,0,0.0000,0,0.0000,1,0.0000,1.8536,,,,,136.0000,0.0000,10.0000
+gemma4:26b,think_false,multilingual_reasoning,1,1,1.0000,0,0.0000,0,0.0000,1,1.0000,2.0646,,,,,701.0000,0.0000,1.0000
+gemma4:26b,think_true,dynamic_reasoning,1,0,0.0000,1,1.0000,0,0.0000,0,,2371.4120,36.7491,,,2334.6629,1210.0000,32279.0000,0.0000
+gemma4:26b,think_true,factuality,1,0,0.0000,1,1.0000,0,0.0000,0,,867.4866,31.6876,,,835.7990,136.0000,23660.0000,0.0000
+gemma4:26b,think_true,multilingual_reasoning,1,1,1.0000,0,0.0000,0,0.0000,1,1.0000,1813.7390,32.4285,1812.2836,1779.8551,1781.3105,701.0000,35003.0000,28.0000

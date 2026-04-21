@@ -1,0 +1,11 @@
+{"event": "task_started", "model": "qwen3.5:9b", "task_id": "mmlu_prox_lite_sw-70", "benchmark": "mmlu_prox_lite_sw", "t_wall": "2026-04-10T15:23:36"}
+{"event": "chunk", "model": "qwen3.5:9b", "task_id": "mmlu_prox_lite_sw-70", "benchmark": "mmlu_prox_lite_sw", "t_sec": 11.4434, "thinking": "", "response": "I", "done": false}
+{"event": "chunk", "model": "qwen3.5:9b", "task_id": "mmlu_prox_lite_sw-70", "benchmark": "mmlu_prox_lite_sw", "t_sec": 11.5368, "thinking": "", "response": "", "done": true}
+{"event": "task_finished", "model": "qwen3.5:9b", "task_id": "mmlu_prox_lite_sw-70", "benchmark": "mmlu_prox_lite_sw", "status": "ok", "score": 1.0, "latency_sec": 11.5397, "t_wall": "2026-04-10T15:23:48"}
+{"event": "task_started", "model": "qwen3.5:9b", "task_id": "simpleqa-0", "benchmark": "simpleqa", "t_wall": "2026-04-10T15:23:48"}
+{"event": "chunk", "model": "qwen3.5:9b", "task_id": "simpleqa-0", "benchmark": "simpleqa", "t_sec": 0.6613, "thinking": "", "response": " Yann", "done": false}
+{"event": "chunk", "model": "qwen3.5:9b", "task_id": "simpleqa-0", "benchmark": "simpleqa", "t_sec": 0.7473, "thinking": "", "response": " Le", "done": false}
+{"event": "chunk", "model": "qwen3.5:9b", "task_id": "simpleqa-0", "benchmark": "simpleqa", "t_sec": 0.8343, "thinking": "", "response": "C", "done": false}
+{"event": "chunk", "model": "qwen3.5:9b", "task_id": "simpleqa-0", "benchmark": "simpleqa", "t_sec": 0.9219, "thinking": "", "response": "un", "done": false}
+{"event": "chunk", "model": "qwen3.5:9b", "task_id": "simpleqa-0", "benchmark": "simpleqa", "t_sec": 1.0119, "thinking": "", "response": "", "done": true}
+{"event": "task_finished", "model": "qwen3.5:9b", "task_id": "simpleqa-0", "benchmark": "simpleqa", "status": "ok", "score": 0.0, "latency_sec": 1.0128, "t_wall": "2026-04-10T15:23:49"}

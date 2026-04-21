@@ -1,0 +1,15 @@
+{
+  "timestamp": "2026-04-10T15:29:57",
+  "dataset": "datasets/frontier/gemma26b_think_loop_probe.jsonl",
+  "models": [
+    "gemma4:26b"
+  ],
+  "task_count": 2,
+  "options": {
+    "think": false,
+    "temperature": 0.2,
+    "top_p": 0.9,
+    "num_ctx": 262144,
+    "timeout": 900
+  }
+}

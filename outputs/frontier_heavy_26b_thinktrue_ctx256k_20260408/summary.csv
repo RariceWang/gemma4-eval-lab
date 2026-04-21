@@ -1,0 +1,4 @@
+model,benchmark,group,task_count,scored_count,mean_score,mean_latency_sec,mean_first_thinking_sec,mean_first_response_sec,mean_prompt_chars,mean_thinking_chars,mean_response_chars,error_count
+gemma4:26b,livebench_reasoning,dynamic_reasoning,1,0,,2371.412,36.7491,,1210.0,32279.0,0.0,1
+gemma4:26b,mmlu_prox_lite_sw,multilingual_reasoning,1,1,1.0,1813.739,32.4285,1812.2836,701.0,35003.0,28.0,0
+gemma4:26b,simpleqa,factuality,1,0,,867.4866,31.6876,,136.0,23660.0,0.0,1

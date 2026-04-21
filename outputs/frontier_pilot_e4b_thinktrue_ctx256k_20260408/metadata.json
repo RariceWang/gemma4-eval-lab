@@ -1,0 +1,15 @@
+{
+  "timestamp": "2026-04-08T20:10:07",
+  "dataset": "datasets/frontier/frontier_pilot_e4b.jsonl",
+  "models": [
+    "gemma4:e4b"
+  ],
+  "task_count": 19,
+  "options": {
+    "think": true,
+    "temperature": 0.2,
+    "top_p": 0.9,
+    "num_ctx": 262144,
+    "timeout": 1200
+  }
+}
